@@ -10,7 +10,7 @@ import tensorflow as tf
 from glob import glob
 from urllib.request import urlretrieve
 from tqdm import tqdm
-
+import cv2
 
 class DLProgress(tqdm):
     last_block = 0
@@ -57,6 +57,22 @@ def maybe_download_pretrained_vgg(data_dir):
         # Remove zip file to save space
         os.remove(os.path.join(vgg_path, vgg_filename))
 
+def augment(image, gt_image):
+    # apply random brightness
+    contr = random.uniform(0.8, 1.2) # Contrast augmentation
+    bright = random.randint(-25, 25) # Brightness augmentation
+    image = image.astype(np.int)
+    image = image * contr + bright
+    image[image > 255] = 255
+    image[image < 0] = 0
+    image = image.astype(np.uint8)
+    #ground truth stays the same
+    
+    #apply random flip on image and ground truth
+    if random.randint(0,1)==1:
+        image=cv2.flip(image,1)
+        gt_image=cv2.flip(gt_image,1)
+    return image, gt_image 
 
 def gen_batch_function(data_folder, image_shape):
     """
@@ -86,11 +102,13 @@ def gen_batch_function(data_folder, image_shape):
 
                 image = scipy.misc.imresize(scipy.misc.imread(image_file), image_shape)
                 gt_image = scipy.misc.imresize(scipy.misc.imread(gt_image_file), image_shape)
+                image, gt_image = augment(image, gt_image)
 
                 gt_bg = np.all(gt_image == background_color, axis=2)
                 gt_bg = gt_bg.reshape(*gt_bg.shape, 1)
                 gt_image = np.concatenate((gt_bg, np.invert(gt_bg)), axis=2)
-
+                
+                
                 images.append(image)
                 gt_images.append(gt_image)
 
