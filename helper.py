@@ -60,7 +60,7 @@ def maybe_download_pretrained_vgg(data_dir):
 def augment(image, gt_image):
     # apply random brightness
     contr = random.uniform(0.8, 1.2) # Contrast augmentation
-    bright = random.randint(-25, 25) # Brightness augmentation
+    bright = random.randint(-50, 50) # Brightness augmentation
     image = image.astype(np.int)
     image = image * contr + bright
     image[image > 255] = 255

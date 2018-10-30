@@ -1,6 +1,39 @@
 # Semantic Segmentation
 ### Introduction
-In this project, you'll label the pixels of a road in images using a Fully Convolutional Network (FCN).
+In this project, the VGG-16 encoder will be used to classify road and non-road in a pixel-by-pixel accuracy  [Kitti Road dataset](http://www.cvlibs.net/datasets/kitti/eval_road.php). 
+
+
+### Project description
+#### Dataset
+The Kitti Road dataset includes road, non-drivable road and non-road. In respect to the gpu, a 970m, a binary classification is executed. The subset used contains 289 classified images for training and 290 unclassified for verification. 
+
+#### Code structure
+The [SemanticSegmentation Notebook](https://github.com/jensakut/CarND-Semantic-Segmentation) consists of several functions. After checking gpu-preconditions, the main net-parameters are defined. The function load-vgg loads up the model and gets tested by a helper function. The next block defines and tests the encoder implementation. 
+Optimize and trainNN define the neural net and get called by run. run then uses the trained net to label test data. 
+
+#### Tuning of hyperparameters
+A parameter variation was performed to find a good parameter set for kernel regularizer and kernel initializer, learning rate, dropout coefficient, and the influence of augmentation. 
+
+Choosing the right meta-parameters first enabled basic classification (kernel regularizer and initializer) and improved it (learning rate, dropout coefficient). Using flipped images to double the number of classified examples and training with random brightness and contrast improved the performance significantly, especially when shadows increase detection difficulty. 
+
+#### The control group in a gif
+
+![](result.gif)
+
+
+#### Further steps
+
+The loss doesn't monotonically decrease. Maybe this is due to the aggressive augmentation and a very small sample size but it may also indicate a bug. 
+
+The dataset used contains just 300 classified pictures, which is a good start, but given the amount of features to be learnt, even with good augmentation the results seem limited. Sticking with this dataset, further augmentation seems promising. 
+
+Therefore, training this net with the cityscapes dataset using the road class would be very interesting. Right now, my account and the license to use the dataset is pending. 
+
+In this implementation, the loss and a manual visual inspection of the classified pictures serve as a measure of quality. Implementing IoU would improve and simplify hyperparameter optimization.
+
+Freezing the graph, fusing nodes, inference optimization and reducing precision to 8 bit, improves the speed of the network, thus it could be used to classify videos significantly faster. 
+
+
 
 ### Setup
 ##### GPU
