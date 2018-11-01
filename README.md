@@ -16,6 +16,9 @@ A parameter variation was performed to find a good parameter set for kernel regu
 
 Choosing the right meta-parameters first enabled basic classification (kernel regularizer and initializer) and improved it (learning rate, dropout coefficient). Using flipped images to double the number of classified examples and training with random brightness and contrast improved the performance significantly, especially when shadows increase detection difficulty. 
 
+Using the pipeline on a video enables some continuity assumptions. A simple approach would be thresholded averaging over several frames. The [optical flow libraries](https://docs.opencv.org/3.3.1/d7/d8b/tutorial_py_lucas_kanade.html) are very promising as well.  
+
+
 #### The control group in a gif
 
 ![](result.gif)
